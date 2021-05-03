@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block title %} {{ query }} {% endblock title %}
+{% block content %}
+<section class="article-list">
+    <div class="container">
+        <div class="intro mt-4 mb-4">
+            <h2 class="text-center">Search results for {{ query }}:</h2>
+        </div>
+        <div class="row articles">
+        {% for movie in movie_data.Search %}
+            <div class="col-sm-6 col-md-4 item"><a href="#"><img class="img-fluid rounded mx-auto" src="{{ movie.Poster }}" /></a>
+                {% if movie.Title|length > 30 %}
+                <h6 class="name pt-3">{{ movie.Title }}</h6>
+                {% else %}
+                <h5 class="name pt-3">{{ movie.Title }}</h6>
+                {% endif %}
+                <p class="description">
+                    <i class="fas fa-ticket-alt"></i> <b>{{ movie.Type }}</b><br/>
+                    <i class="fa fa-imdb"></i> <a href="https://www.imdb.com/title/{{ movie.imdbID }}/"><b>IMDB</b></a>
+                    <br/>
+                    <i class="far fa-calendar-alt"></i> <b>{{ movie.Year }}</b>
+                </p>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <div class="d-flex justify-content-center mb-5 mt-5">
+        <button type="button" class="btn btn-info"><a href="{% url 'movie:pagination' query page_number %}" class="text-decoration-none text-light">Load More</a></button>
+    </div>
+</section>
+{% endblock content %}
