@@ -1,15 +1,24 @@
 {% extends 'layout.html' %}
+{% load static %}
 
-{% block title %} {{ query }} {% endblock title %}
+{% block title %} Search: {{ query }} {% endblock title %}
 {% block content %}
 <section class="article-list">
     <div class="container">
         <div class="intro mt-4 mb-4">
-            <h2 class="text-center">Search results for {{ query }}:</h2>
+            {% if movie_data.Response == "True" %}
+            <h2 class="text-center">Search for {{ query }}: </h2>
+            {% else %}
+            <h2 class="text-center">No results for {{ query }} </h2>
+            {% endif %}
         </div>
         <div class="row articles">
         {% for movie in movie_data.Search %}
-            <div class="col-sm-6 col-md-4 item"><a href="#"><img class="img-fluid rounded mx-auto" src="{{ movie.Poster }}" /></a>
+            <div class="col-sm-6 col-md-4 item"><a href="{% url 'movie:movie-details' movie.imdbID %}"><img class="img-fluid rounded mx-auto"
+                {% if movie.Poster == "N/A" %}
+                src="{% static 'img/broken.png' %}"
+                {% else %}
+                src="{{ movie.Poster }}" {% endif %} /></a>
                 {% if movie.Title|length > 30 %}
                 <h6 class="name pt-3">{{ movie.Title }}</h6>
                 {% else %}
@@ -25,8 +34,10 @@
         {% endfor %}
         </div>
     </div>
+    {% if movie_data.totalResults|add:"0" > 10 %}
     <div class="d-flex justify-content-center mb-5 mt-5">
         <button type="button" class="btn btn-info"><a href="{% url 'movie:pagination' query page_number %}" class="text-decoration-none text-light">Load More</a></button>
     </div>
+    {% endif %}
 </section>
 {% endblock content %}

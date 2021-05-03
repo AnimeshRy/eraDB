@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 min-vh-80">
+    <div class="row">
+        <div class="col-md-4">
+            {% if our_db is True %}
+            <img src="{{ movie_data.Poster.url }}" alt="" class="d-block w-60">
+            {% else %}
+            <img src="{{ movie_data.Poster }}" alt="" class="d-block w-60">
+            {% endif %}
+            <h4 class="mt-3">Ratings</h4>
+            <p><b>imdbRating:</b> {{ movie_data.imdbRating }}({{ movie_data.imdbVotes }})</p>
+            {% for movie in movie_data.Ratings.all %}
+            <p><b>{{ movie.source }}:</b> {{ movie.rating }}</p>
+            {% endfor %}
+            <p><b>Website:</b> {{ movie_data.Website }}</p>
+        </div>
+        <div class="col-md-7">
+            <h2>{{ movie_data.Title }}</h2>
+            <p class="text-primary">{{ movie_data.Type }}</p>
+            <p>{{ movie_data.Plot }}</p>
+
+            <div class="movie-info">
+                <p><b>Rated:</b> {{ movie_data.Rated }}</p>
+                <p><b>Production:</b> {{ movie_data.Production }}</p>
+                <p><b>Released:</b> {{ movie_data.Released }}</p>
+                <p><b>Runtime:</b> {{ movie_data.Runtime }}</p>
+                {% if our_db is True %}
+                <p>
+                    <b>Actors:</b> {% for actor in movie_data.Actors.all %}<a href="#"><b>{{ actor }}</a>, </b>{% endfor %}</p>
+                {% else %}
+                <p>Actors: <b>{{ movie_data.Actors }}</b></p>
+                {% endif %}
+                {% if our_db is True %}
+                <p>
+                    <b>Genre:</b> {% for genre in movie_data.Genre.all %}<a href="#"><b>{{ genre }}</a>, </b>{% endfor %}</p>
+                {% else %}
+                <p><b>Genre:</b> <b>{{ movie_data.Genre }}</b></p>
+                {% endif %}
+                <p><b>Director:</b> {{ movie_data.Director }}</p>
+                <p><b>Writer:</b> {{ movie_data.Writer }}</p>
+                <p><b>Language:</b> {{ movie_data.Language }}</p>
+                <p><b>Country:</b> {{ movie_data.Country }}</p>
+                <p><b>Awards:</b> {{ movie_data.Awards }}</p>
+                <p><b>Metascore:</b> {{ movie_data.Metascore }}</p>
+                <p><b>BoxOffice:</b> {{ movie_data.BoxOffice }}</p>
+                <p><b>DVD:</b> {{ movie_data.DVD }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

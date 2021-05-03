@@ -1,5 +1,11 @@
 body {
-    border: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  border: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.movie-info {
+  background-color: rgb(236, 235, 235);
+  padding: 10px 20px;
+  margin-bottom: 20px;
+}
