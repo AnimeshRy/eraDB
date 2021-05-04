@@ -7,5 +7,6 @@ urlpatterns = [
     path('', views.index, name="index"),
     path('search/<query>/page/<page_number>',
          views.pagination, name="pagination"),
-    path('<imdb_id>', views.movieDetails, name="movie-details")
+    path('<imdb_id>', views.movieDetails, name="movie-details"),
+    path('genre/<slug:genre_slug>', views.genres, name="genres")
 ]

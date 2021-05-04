@@ -6,9 +6,17 @@
     <div class="row">
         <div class="col-md-4">
             {% if our_db is True %}
-            <img src="{{ movie_data.Poster.url }}" alt="" class="d-block w-60">
+                {% if movie_data.Poster == "" %}
+                    <img src="{% static 'img/broken.png' %}" alt="" class="d-block w-60">
+                {% else %}
+                    <img src="{{ movie_data.Poster.url }}" alt="" class="d-block w-60">
+                {% endif %}
             {% else %}
-            <img src="{{ movie_data.Poster }}" alt="" class="d-block w-60">
+                {% if movie_data.Poster == "N/A" %}
+                    <img src="{% static 'img/broken.png' %}" alt="" class="d-block w-60">
+                {% else %}
+                    <img src="{{ movie_data.Poster }}" alt="" class="d-block w-60">
+                {% endif %}
             {% endif %}
             <h4 class="mt-3">Ratings</h4>
             <p><b>imdbRating:</b> {{ movie_data.imdbRating }}({{ movie_data.imdbVotes }})</p>
@@ -35,7 +43,7 @@
                 {% endif %}
                 {% if our_db is True %}
                 <p>
-                    <b>Genre:</b> {% for genre in movie_data.Genre.all %}<a href="#"><b>{{ genre }}</a>, </b>{% endfor %}</p>
+                    <b>Genre:</b> {% for genre in movie_data.Genre.all %}<a href="{{ genre.get_absolute_url }}"><b>{{ genre }}</a>, </b>{% endfor %}</p>
                 {% else %}
                 <p><b>Genre:</b> <b>{{ movie_data.Genre }}</b></p>
                 {% endif %}

@@ -5,11 +5,15 @@ from django.utils.text import slugify
 import requests
 from io import BytesIO
 from django.core import files
+from django.urls import reverse
 
 
 class Genre(models.Model):
     title = models.CharField(max_length=25)
     slug = models.SlugField(null=False, unique=True)
+
+    def get_absolute_url(self):
+        return reverse('movie:genres', args=[self.slug])
 
     def __str__(self):
         return self.title

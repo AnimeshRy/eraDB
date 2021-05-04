@@ -1,5 +1,5 @@
 from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from django.utils.text import slugify
 import os
@@ -7,6 +7,7 @@ import dotenv
 import requests
 from .models import Movie, Genre, Rating
 from actor.models import Actor
+from django.core.paginator import Paginator
 
 dotenv.load_dotenv()
 APIKEY = str(os.getenv('omdbKey'))
@@ -83,6 +84,10 @@ def movieDetails(request, imdb_id):
             rating_objs.append(r)
 
         if movie_data['Type'] == 'movie':
+            if movie_data['Poster'] == "N/A":
+                PosterURL = ""
+            else:
+                PosterURL = movie_data['Poster']
             # save movie info
             m, created = Movie.objects.get_or_create(
                 Title=movie_data['Title'],
@@ -96,7 +101,7 @@ def movieDetails(request, imdb_id):
                 Language=movie_data['Language'],
                 Country=movie_data['Country'],
                 Awards=movie_data['Awards'],
-                Poster_url=movie_data['Poster'],
+                Poster_url=PosterURL,
                 Metascore=movie_data['Metascore'],
                 imdbRating=movie_data['imdbRating'],
                 imdbVotes=movie_data['imdbVotes'],
@@ -113,6 +118,10 @@ def movieDetails(request, imdb_id):
 
         else:
             # save series info
+            if movie_data['Poster'] == "N/A":
+                PosterURL = ""
+            else:
+                PosterURL = movie_data['Poster']
             m, created = Movie.objects.get_or_create(
                 Title=movie_data['Title'],
                 Year=movie_data['Year'],
@@ -125,7 +134,7 @@ def movieDetails(request, imdb_id):
                 Language=movie_data['Language'],
                 Country=movie_data['Country'],
                 Awards=movie_data['Awards'],
-                Poster_url=movie_data['Poster'],
+                Poster_url=PosterURL,
                 Metascore=movie_data['Metascore'],
                 imdbRating=movie_data['imdbRating'],
                 imdbVotes=movie_data['imdbVotes'],
@@ -152,4 +161,21 @@ def movieDetails(request, imdb_id):
     }
 
     template = loader.get_template('movie_details.html')
+    return HttpResponse(template.render(context, request))
+
+
+def genres(request, genre_slug):
+    genre = get_object_or_404(Genre, slug=genre_slug)
+    movies = Movie.objects.filter(Genre=genre)
+
+    # pagination
+    paginator = Paginator(movies, 9)
+    page_number = request.GET.get('page')
+    movie_data = paginator.get_page(page_number)
+
+    context = {
+        'movie_data': movie_data,
+        'genre': genre
+    }
+    template = loader.get_template('genre.html')
     return HttpResponse(template.render(context, request))
