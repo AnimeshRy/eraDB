@@ -43,7 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'movie',
-    'actor'
+    'actor',
+    'authy',
+
+
+    # third party
+    'crispy_forms'
 ]
 
 MIDDLEWARE = [
@@ -121,7 +126,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
@@ -134,5 +140,11 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = 'static_root'
 
+LOGIN_REDIRECT_URL = "movie:index"
+LOGIN_URL = "account:login"
+LOGOUT_REDIRECT_URL = "account:login"
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

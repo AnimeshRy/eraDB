@@ -1,0 +1,26 @@
+
+{% extends 'layout.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mt-4 mb-4">Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group col-md-4 mb-0">
+            {{ form.username|as_crispy_field }}
+          </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4 mb-0">
+                {{ form.password|as_crispy_field }}
+            </div>
+        </div>
+          <button type="submit" class="btn btn-primary ml-2">LogIn</button>
+          <a class="ml-4" href="{% url 'account:signup' %}">Don't have an account?</a>
+          <a class="ml-4" href="{% url 'reset-password' %}">Reset Password</a>
+        </div>
+      </form>
+</div>
+{% endblock content %}
