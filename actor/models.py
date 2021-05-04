@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from django.urls import reverse
 
 
 class Actor(models.Model):
@@ -7,6 +8,9 @@ class Actor(models.Model):
     picture = models.ImageField(blank=True)
     slug = models.SlugField(null=True, unique=True)
     movies = models.ManyToManyField('movie.Movie')
+
+    def get_absolute_url(self):
+        return reverse('actor:actors', args=[self.slug])
 
     def __str__(self):
         return self.name

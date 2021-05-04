@@ -37,7 +37,7 @@
                 <p><b>Runtime:</b> {{ movie_data.Runtime }}</p>
                 {% if our_db is True %}
                 <p>
-                    <b>Actors:</b> {% for actor in movie_data.Actors.all %}<a href="#"><b>{{ actor }}</a>, </b>{% endfor %}</p>
+                    <b>Actors:</b> {% for actor in movie_data.Actors.all %}<a href="{{ actor.get_absolute_url }}"><b>{{ actor }}</a>, </b>{% endfor %}</p>
                 {% else %}
                 <p>Actors: <b>{{ movie_data.Actors }}</b></p>
                 {% endif %}
