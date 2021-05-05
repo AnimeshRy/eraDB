@@ -1,13 +1,16 @@
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from django.utils.text import slugify
-import os
-import dotenv
-import requests
 from .models import Movie, Genre, Rating
 from actor.models import Actor
 from django.core.paginator import Paginator
+from authy.models import Profile
+from django.contrib.auth.models import User
+from django.urls import reverse
+import os
+import dotenv
+import requests
 
 dotenv.load_dotenv()
 APIKEY = str(os.getenv('omdbKey'))
@@ -179,3 +182,26 @@ def genres(request, genre_slug):
     }
     template = loader.get_template('genre.html')
     return HttpResponse(template.render(context, request))
+
+
+def addMoviesToWatch(request, imdb_id):
+    movie = Movie.objects.get(imdbID=imdb_id)
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    profile.to_watch.add(movie)
+
+    return HttpResponseRedirect(reverse('movie:movie-details', args=[imdb_id]))
+
+
+def addMoviesWatched(request, imdb_id):
+    movie = Movie.objects.get(imdbID=imdb_id)
+    user = request.user
+    profile = Profile.objects.get(user=user)
+
+    if profile.to_watch.filter(imdbID=imdb_id).exists():
+        profile.to_watch.remove(movie)
+        profile.watched.add(movie)
+    else:
+        profile.watched.add(movie)
+
+    return HttpResponseRedirect(reverse('movie:movie-details', args=[imdb_id]))

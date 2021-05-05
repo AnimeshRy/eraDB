@@ -19,7 +19,11 @@ def user_directory_path(instance, filename):
 class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='profile')
-    profile_info = models.TextField(max_length=150)
+    first_name = models.CharField(max_length=50, null=True, blank=True)
+    last_name = models.CharField(max_length=50, null=True, blank=True)
+    location = models.CharField(max_length=50, null=True, blank=True)
+    url = models.CharField(max_length=80, null=True, blank=True)
+    profile_info = models.TextField(max_length=150, null=True, blank=True)
     created = models.DateField(auto_now_add=True)
     to_watch = models.ManyToManyField(Movie, related_name='towatch')
     watched = models.ManyToManyField(Movie, related_name='watched')

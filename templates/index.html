@@ -8,7 +8,6 @@
                 <div class="col-xl-9 mx-auto">
                     <h1 class="mb-5">Search Movies, Genres, Actors and much more !</h1>
                 </div>
-                {% if request.user.is_authenticated %}
                 <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
                     <form method="GET" action="{% url 'movie:index' %}">
                         <div class="form-row">
@@ -17,16 +16,6 @@
                         </div>
                     </form>
                 </div>
-                {% else %}
-                <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-                    <form >
-                        <div class="form-row">
-                            <div class="col-12 col-md-9 mb-2 mb-md-0"><input class="form-control form-control-lg" type="text" name="q" placeholder="Login To Search ?"></div>
-                            <div class="col-12 col-md-3"><button class="btn btn-primary btn-block btn-lg" type="submit">Search&nbsp;</button></div>
-                        </div>
-                    </form>
-                </div>
-                {% endif %}
             </div>
         </div>
     </header>

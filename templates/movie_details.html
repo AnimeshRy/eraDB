@@ -2,7 +2,12 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5 min-vh-80">
+<div class="container mt-3 min-vh-80">
+    {% if our_db is not True %}
+    <div class="alert alert-primary" role="alert" id="myAlert">
+        Relead the page to inject data into our database
+      </div>
+    {% endif %}
     <div class="row">
         <div class="col-md-4">
             {% if our_db is True %}
@@ -56,8 +61,12 @@
                 <p><b>BoxOffice:</b> {{ movie_data.BoxOffice }}</p>
                 <p><b>DVD:</b> {{ movie_data.DVD }}</p>
             </div>
+            <div class="d-flex flex-row bd-highlight mb-4">
+                <button class="btn btn-success"><a class="text-decoration-none text-white"><i class="fas fa-star"></i>  Rate</a></button>
+                <button class="btn btn-success ml-4"><a class="text-decoration-none text-white" href="{% url 'movie:add-movie-to-watch' movie_data.imdbID %}"><i class="fas fa-box-open"></i></i> - Watchlist</a></button>
+                <button class="btn btn-success ml-4"><a class="text-decoration-none text-white" href="{% url 'movie:add-movie-to-watched' movie_data.imdbID %}"><i class="fas fa-box"></i> - Watched</a></button>
+            </div>
         </div>
     </div>
 </div>
-
 {% endblock content %}
