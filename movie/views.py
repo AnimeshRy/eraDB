@@ -2,12 +2,13 @@ from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from django.utils.text import slugify
-from .models import Movie, Genre, Rating
+from .models import Movie, Genre, Rating, Review
 from actor.models import Actor
 from django.core.paginator import Paginator
 from authy.models import Profile
-from django.contrib.auth.models import User
 from django.urls import reverse
+from .forms import RateForm
+from django.db.models import Avg
 import os
 import dotenv
 import requests
@@ -52,7 +53,18 @@ def pagination(request, query, page_number):
 def movieDetails(request, imdb_id):
     if Movie.objects.filter(imdbID=imdb_id).exists():
         movie_data = Movie.objects.get(imdbID=imdb_id)
+        reviews = Review.objects.filter(movie=movie_data)
+        reviews_avg = reviews.aggregate(Avg('rate'))
+        reviews_count = reviews.count()
         our_db = True
+
+        context = {
+            'movie_data': movie_data,
+            'reviews': reviews,
+            'reviews_avg': reviews_avg,
+            'reviews_count': reviews_count,
+            'our_db': our_db,
+        }
     else:
         url = f'http://omdbapi.com/?apikey={APIKEY}&i={imdb_id}'
         response = requests.get(url)
@@ -158,10 +170,10 @@ def movieDetails(request, imdb_id):
         m.save()
         our_db = False
 
-    context = {
-        'movie_data': movie_data,
-        'our_db': our_db
-    }
+        context = {
+            'movie_data': movie_data,
+            'our_db': our_db
+        }
 
     template = loader.get_template('movie_details.html')
     return HttpResponse(template.render(context, request))
@@ -205,3 +217,28 @@ def addMoviesWatched(request, imdb_id):
         profile.watched.add(movie)
 
     return HttpResponseRedirect(reverse('movie:movie-details', args=[imdb_id]))
+
+
+def Rate(request, imdb_id):
+    movie = Movie.objects.get(imdbID=imdb_id)
+    user = request.user
+
+    if request.method == 'POST':
+        form = RateForm(request.POST)
+        if form.is_valid():
+            rate = form.save(commit=False)
+            rate.user = user
+            rate.movie = movie
+            rate.save()
+            return HttpResponseRedirect(reverse('movie:movie-details', args=[imdb_id]))
+    else:
+        form = RateForm()
+
+    template = loader.get_template('rate.html')
+
+    context = {
+        'form': form,
+        'movie_data': movie,
+    }
+
+    return HttpResponse(template.render(context, request))

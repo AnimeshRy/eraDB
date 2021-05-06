@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'movie',
     'actor',
     'authy',
+    'comment',
 
 
     # third party

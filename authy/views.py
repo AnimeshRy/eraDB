@@ -4,8 +4,11 @@ from django.views.generic import CreateView
 from .forms import SignUpForm, EditProfileForm
 from django.urls import reverse
 from .models import Profile
+from comment.models import Comment
+from comment.forms import CommentForm
 from django.contrib.auth.decorators import login_required
 from django.template import loader
+from movie.models import Review, Movie, Likes
 from django.http import HttpResponse, HttpResponseRedirect
 
 
@@ -57,3 +60,88 @@ def UserProfile(request, username):
     template = loader.get_template('profile.html')
 
     return HttpResponse(template.render(context, request))
+
+
+def ReviewDetail(request, username, imdb_id):
+    user_comment = request.user
+    user = get_object_or_404(User, username=username)
+    movie = Movie.objects.get(imdbID=imdb_id)
+    review = Review.objects.get(user=user, movie=movie)
+
+    # Comment stuff:
+    comments = Comment.objects.filter(review=review).order_by('date')
+
+    # Comment Form stuff:
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.review = review
+            comment.user = user_comment
+            comment.save()
+            return HttpResponseRedirect(reverse('movie:user-review', args=[username, imdb_id]))
+    else:
+        form = CommentForm()
+
+    context = {
+        'review': review,
+        'movie_data': movie,
+        'comments': comments,
+        'form': form,
+    }
+
+    template = loader.get_template('movie_review.html')
+
+    return HttpResponse(template.render(context, request))
+
+
+def like(request, username, imdb_id):
+    user_liking = request.user
+    user_review = get_object_or_404(User, username=username)
+    movie = Movie.objects.get(imdbID=imdb_id)
+    review = Review.objects.get(user=user_review, movie=movie)
+    current_likes = review.likes
+
+    liked = Likes.objects.filter(
+        user=user_liking, review=review, type_like=2).count()
+
+    if not liked:
+        like = Likes.objects.create(
+            user=user_liking, review=review, type_like=2)
+        current_likes = current_likes + 1
+
+    else:
+        Likes.objects.filter(
+            user=user_liking, review=review, type_like=2).delete()
+        current_likes = current_likes - 1
+
+    review.likes = current_likes
+    review.save()
+
+    return HttpResponseRedirect(reverse('movie:user-review', args=[username, imdb_id]))
+
+
+def unlike(request, username, imdb_id):
+    user_unliking = request.user
+    user_review = get_object_or_404(User, username=username)
+    movie = Movie.objects.get(imdbID=imdb_id)
+    review = Review.objects.get(user=user_review, movie=movie)
+    current_likes = review.unlikes
+
+    liked = Likes.objects.filter(
+        user=user_unliking, review=review, type_like=1).count()
+
+    if not liked:
+        like = Likes.objects.create(
+            user=user_unliking, review=review, type_like=1)
+        current_likes = current_likes + 1
+
+    else:
+        Likes.objects.filter(
+            user=user_unliking, review=review, type_like=1).delete()
+        current_likes = current_likes - 1
+
+    review.unlikes = current_likes
+    review.save()
+
+    return HttpResponseRedirect(reverse('movie:user-review', args=[username, imdb_id]))

@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-3 min-vh-80">
+    <div class="row">
+        <div class="col-md-4">
+                {% if movie_data.Poster == "" %}
+                    <img src="{% static 'img/broken.png' %}" alt="" class="d-block w-60">
+                {% else %}
+                    <img src="{{ movie_data.Poster.url }}" alt="" class="d-block w-60">
+                {% endif %}
+            <h4 class="mt-3">Ratings</h4>
+            <p><b>imdbRating:</b> {{ movie_data.imdbRating }}({{ movie_data.imdbVotes }})</p>
+            {% for movie in movie_data.Ratings.all %}
+            <p><b>{{ movie.source }}:</b> {{ movie.rating }}</p>
+            {% endfor %}
+        </div>
+        <div class="col-md-7">
+            <h2><a class="text-decoration-none text-dark" href="{% url 'movie:movie-details' movie_data.imdbID %}">{{ movie_data.Title }}</a></h2>
+            <p class="text-primary">{{ movie_data.Type }}</p>
+            <p>{{ movie_data.Plot }}</p>
+            <h4>Review</h4>
+
+            <div class="movie-info">
+                <div class="d-flex flex-row bd-highlight mb-3 justify-content-between">
+                    <div>
+                        <p><b>Rated by </b> {{ review.user.profile.first_name }} {{ review.user.profile.last_name }}</p>
+                        <p><b>Review - </b> {{ review.text }}</p>
+                        <p><b>Rating</b>  <i class="fas fa-star"></i> {{ review.rate }}/10 </p>
+                    </div>
+                    {% if review.user.profile.picture %}
+                    <img src="{{ review.user.profile.picture.url }}" alt="Admin" class="rounded-circle" width="100" height="100">
+                    {% else %}
+                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="100" height="100">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="d-flex flex-row bd-highlight mb-4">
+                <button class="btn btn-success"><a class="text-decoration-none text-white" href="{% url 'account:user-review-like' review.user.username movie_data.imdbID %}"><i class="fas fa-thumbs-up"></i>  {{ review.likes }}</a></button>
+                <button class="btn btn-danger ml-4"><a class="text-decoration-none text-white" href="{% url 'account:user-review-unlike' review.user.username movie_data.imdbID %}"><i class="fas fa-thumbs-down"></i>  {{ review.unlikes }}</a></button>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body text-center">
+            <h4 class="card-title">Latest Comments</h4>
+        </div>
+        <div class="comment-widgets">
+            {% for comment in comments %}
+            <div class="d-flex flex-column comment-row m-t-0">
+                {% if comment.user.profile.picture %}
+                    <div class="p-2"><img src="{{ comment.user.profile.picture.url }}" alt="user" width="50" height="50" class="rounded-circle"></div>
+                {% else %}
+                    <div class="p-2"><img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="user" width="50" class="rounded-circle"></div>
+                {% endif %}
+
+                <div class="comment-text w-100 mb-1">
+                    <div class="d-flex flex-row"><h6 class="ml-1"><b>{{ comment.user.profile.first_name }} {{ comment.user.profile.last_name }}  </b></h6><p class="m-b-15 d-block"> - {{ comment.body }}</p></div>
+                    <div class="comment-footer"> <span class="text-muted float-right mr-2">{{ comment.date|date:"M d, Y" }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div> <!-- Card -->
+    </div>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-11 ml-2 mb-1">
+              {{ form.body|as_crispy_field }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success ml-2 mb-1">Comment</button>
+    </form>
+</div>
+{% endblock content %}
