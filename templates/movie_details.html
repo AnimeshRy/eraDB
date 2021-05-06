@@ -63,11 +63,13 @@
                 <p><b>Rating:</b> Rated {{ reviews_avg.rate__avg }} by {{ reviews_count }} watchers.</p>
 
             </div>
+            {% if user.is_authenticated %}
             <div class="d-flex flex-row bd-highlight mb-4">
                 <button class="btn btn-success"><a class="text-decoration-none text-white" href="{% url 'movie:rate-movie' movie_data.imdbID %}"><i class="fas fa-star"></i>  Rate</a></button>
                 <button class="btn btn-success ml-4"><a class="text-decoration-none text-white" href="{% url 'movie:add-movie-to-watch' movie_data.imdbID %}"><i class="fas fa-box-open"></i></i> - Watchlist</a></button>
                 <button class="btn btn-success ml-4"><a class="text-decoration-none text-white" href="{% url 'movie:add-movie-to-watched' movie_data.imdbID %}"><i class="fas fa-box"></i> - Watched</a></button>
             </div>
+            {% endif %}
         </div>
     </div>
     <div class="card">
