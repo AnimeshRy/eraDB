@@ -20,6 +20,8 @@
 
 🎯 **WatchList** - Add and manage movies, series etc to seperate user watchlist
 
+🎯 **Sort by Actor's and Genre's** - Sort locally movie data based on actor and genre.
+
 🎯 **Reviews and Comments** - Add a review for a movie and other users can like, dislike or comment on the review.
 
 ## 🚀 Setup
