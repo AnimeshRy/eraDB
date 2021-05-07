@@ -35,7 +35,7 @@ python@3.8 or higher
 git@2.17.1 or higher
 ```
 
-You can also use the [Zip](https://github.com/AnimeshRy/gymrocket/archive/master.zip) file and extract the folder.
+You can also use the [Zip](https://github.com/AnimeshRy/eraDB/archive/refs/heads/main.zip) file and extract the folder.
 
 ## 🔧 How To Use
 
