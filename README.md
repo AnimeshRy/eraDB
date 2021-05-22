@@ -7,7 +7,7 @@
 <a href="https://github.com/AnimeshRy/eraDB/network"><img alt="GitHub forks" src="https://img.shields.io/github/forks/AnimeshRy/eraDB"></a>
 
 <p align="center">
-    <a href="https://youtu.be/rCxIc5Z1YAA">
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
   <img width="460" height="300" src="./static/img/result.gif">
     </a>
 </p>
